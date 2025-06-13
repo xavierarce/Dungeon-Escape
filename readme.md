@@ -1,6 +1,3 @@
-Sure! Here’s a clean and clear **Cahier des Charges** for your Dungeon Scape Java game project, based on what you gave me and structured formally:
-
----
 
 # Cahier des Charges — Dungeon Scape
 
