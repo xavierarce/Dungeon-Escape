@@ -1,6 +1,6 @@
 package Personnage.Player;
 
 
-public class Joueur {
+public class Player {
     
 }
