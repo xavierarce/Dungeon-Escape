@@ -9,7 +9,7 @@ Développer un jeu vidéo en Java, intitulé  **Dungeon Scape** , basé sur un s
 
 ### 2. **Fonctionnalités Principales**
 
-#### 2.1. Sélection du personnage
+#### 2.1. Sélection du personnage 
 
 * Le joueur doit pouvoir choisir parmi 3 classes de personnage au début du jeu :
   * **Guerrier** : équilibré en attaque et défense.
