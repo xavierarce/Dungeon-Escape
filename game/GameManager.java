@@ -70,12 +70,17 @@ public class GameManager {
         // shop.open(player); // Coming soon
       }
 
-      System.out.print("Continue to next dungeon? (y/n): ");
-      String choice = scanner.nextLine();
-      if (!choice.equalsIgnoreCase("y")) {
+      String choice;
+      do {
+        System.out.print("Continue to next dungeon? (y/n): ");
+        choice = scanner.nextLine().trim().toLowerCase();
+      } while (!choice.equals("y") && !choice.equals("n"));
+
+      if (choice.equals("n")) {
         System.out.println("👋 Thanks for playing!");
         break;
       }
+
     }
   }
 }
