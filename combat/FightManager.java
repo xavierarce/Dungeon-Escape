@@ -1,9 +1,9 @@
 package combat;
 
-import personnages.enemy.Enemy;
-import personnages.player.Player;
-
 import java.util.Scanner;
+
+import characters.enemy.Enemy;
+import characters.player.Player;
 
 public class FightManager {
   private Player player;

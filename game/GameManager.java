@@ -1,11 +1,12 @@
 package game;
 
 import combat.FightManager;
-import personnages.EnemyFactory;
-import personnages.enemy.Enemy;
-import personnages.player.Player;
 
 import java.util.Scanner;
+
+import characters.enemy.EnemyFactory;
+import characters.enemy.Enemy;
+import characters.player.Player;
 
 public class GameManager {
   private Player player;
