@@ -9,7 +9,7 @@ import map.Room;
 import java.util.Scanner;
 
 public class GameManager {
-  private final int MAP_SIZE = 3;
+  private final int MAP_SIZE = 5;
   private Room[][] dungeon;
   private int playerX = 1;
   private int playerY = 1;
