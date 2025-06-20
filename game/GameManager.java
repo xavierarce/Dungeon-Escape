@@ -152,6 +152,12 @@ public class GameManager {
     for (int y = 0; y < MAP_SIZE; y++) {
       for (int x = 0; x < MAP_SIZE; x++) {
         dungeon[y][x] = new Room();
+
+        if (!(x == playerX && y == playerY) && !(x == bossX && y == bossY)
+            && !(x == MAP_SIZE - 1 && y == MAP_SIZE - 1)) {
+          boolean hasEnemy = Math.random() < 0.7;
+          dungeon[y][x].setHasEnemy(hasEnemy);
+        }
       }
     }
 
