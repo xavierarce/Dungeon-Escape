@@ -1,12 +1,11 @@
 package game;
 
 import combat.FightManager;
-
-import java.util.Scanner;
-
 import characters.enemy.EnemyFactory;
 import characters.enemy.Enemy;
 import characters.player.Player;
+
+import java.util.Scanner;
 
 public class GameManager {
   private Player player;
@@ -27,7 +26,6 @@ public class GameManager {
       System.out.println("\n--- Dungeon " + dungeonCount + " ---");
 
       Enemy enemy = EnemyFactory.generateEnemy(dungeonCount);
-
       FightManager fight = new FightManager(player, enemy);
       boolean won = fight.start();
 
@@ -58,11 +56,7 @@ public class GameManager {
     while (true) {
       System.out.println("\nChoose your class (use 'w' to move up, 's' to move down, press Enter to confirm):");
       for (int i = 0; i < classes.length; i++) {
-        if (i == selected) {
-          System.out.println("> " + classes[i]);
-        } else {
-          System.out.println("  " + classes[i]);
-        }
+        System.out.println((i == selected ? "> " : "  ") + classes[i]);
       }
 
       String input = scanner.nextLine();
