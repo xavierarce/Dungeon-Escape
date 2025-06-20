@@ -2,8 +2,9 @@ package map;
 
 public class Room {
   private boolean visited = false;
-  private boolean hasEnemy = Math.random() < 0.7;
+  private boolean hasEnemy = false;
   private boolean isExit = false;
+  private boolean bossRoom = false;
 
   public boolean isVisited() {
     return visited;
@@ -17,6 +18,10 @@ public class Room {
     return hasEnemy;
   }
 
+  public void setHasEnemy(boolean hasEnemy) {
+    this.hasEnemy = hasEnemy;
+  }
+
   public boolean isExit() {
     return isExit;
   }
@@ -24,4 +29,13 @@ public class Room {
   public void setExit(boolean exit) {
     isExit = exit;
   }
+
+  public boolean isBossRoom() {
+    return bossRoom;
+  }
+
+  public void setBossRoom(boolean bossRoom) {
+    this.bossRoom = bossRoom;
+  }
+
 }

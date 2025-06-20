@@ -9,13 +9,19 @@ import map.Room;
 import java.util.Scanner;
 
 public class GameManager {
-  private final int MAP_SIZE = 3;
+  private final int MAP_SIZE = 5;
   private Room[][] dungeon;
   private int playerX = 1;
   private int playerY = 1;
   private int dungeonLevel = 1;
   private Scanner scanner = new Scanner(System.in);
   private Player player;
+
+  // Boss enemy and flag if defeated
+  private Enemy boss;
+  private int bossX;
+  private int bossY;
+  private boolean bossDefeated;
 
   public void start() {
     System.out.println("=== Welcome to Dungeon Escape ===");
@@ -33,18 +39,30 @@ public class GameManager {
       movePlayer();
 
       Room currentRoom = dungeon[playerY][playerX];
+
       if (!currentRoom.isVisited()) {
         currentRoom.setVisited(true);
 
-        if (currentRoom.hasEnemy()) {
+        if (currentRoom.isBossRoom() && !bossDefeated) {
+          System.out.println("!! You encountered the Dungeon Boss !!");
+          FightManager fight = new FightManager(player, boss);
+          boolean won = fight.start();
+          if (!won) {
+            System.out.println("\n You died. GAME OVER.");
+            return;
+          }
+          bossDefeated = true;
+          player.gainEXP(boss.getExpReward());
+          player.gainGold(boss.getGoldReward());
+          System.out.println(" You defeated the boss!");
+        } else if (currentRoom.hasEnemy()) {
           Enemy enemy = EnemyFactory.generateEnemy(dungeonLevel);
           FightManager fight = new FightManager(player, enemy);
           boolean won = fight.start();
           if (!won) {
-            System.out.println("\n💀 You died. GAME OVER.");
+            System.out.println("\n You died. GAME OVER.");
             return;
           }
-
           player.gainEXP(enemy.getExpReward());
           player.gainGold(enemy.getGoldReward());
         } else {
@@ -55,10 +73,14 @@ public class GameManager {
       }
 
       if (currentRoom.isExit()) {
-        System.out.println("🚪 You found the exit! Proceeding to the next dungeon...");
-        dungeonLevel++;
-        playerX = playerY = 1;
-        generateDungeon();
+        if (bossDefeated) {
+          System.out.println("🚪 You found the exit and can now proceed to the next dungeon.");
+          dungeonLevel++;
+          playerX = playerY = 1;
+          generateDungeon();
+        } else {
+          System.out.println("🚪 You found the exit but the boss is still alive! Defeat the boss first!");
+        }
       }
 
       if (!askContinue()) {
@@ -112,6 +134,10 @@ public class GameManager {
       for (int x = 0; x < MAP_SIZE; x++) {
         if (x == playerX && y == playerY)
           System.out.print("[P]");
+        else if (dungeon[y][x].isBossRoom() && !bossDefeated)
+          System.out.print("[B]");
+        else if (dungeon[y][x].isExit())
+          System.out.print("[E]");
         else if (dungeon[y][x].isVisited())
           System.out.print("[x]");
         else
@@ -126,9 +152,27 @@ public class GameManager {
     for (int y = 0; y < MAP_SIZE; y++) {
       for (int x = 0; x < MAP_SIZE; x++) {
         dungeon[y][x] = new Room();
+
+        if (!(x == playerX && y == playerY) && !(x == bossX && y == bossY)
+            && !(x == MAP_SIZE - 1 && y == MAP_SIZE - 1)) {
+          boolean hasEnemy = Math.random() < 0.7;
+          dungeon[y][x].setHasEnemy(hasEnemy);
+        }
       }
     }
+
+    // Place exit in bottom-right
     dungeon[MAP_SIZE - 1][MAP_SIZE - 1].setExit(true);
+
+    // Place boss on top middle
+    bossY = 0;
+    bossX = MAP_SIZE / 2;
+    dungeon[bossY][bossX].setBossRoom(true);
+
+    // Create the boss enemy here!
+    boss = EnemyFactory.generateBoss(dungeonLevel);
+
+    bossDefeated = false;
   }
 
   private boolean askContinue() {
