@@ -8,6 +8,8 @@ import map.Room;
 
 import java.util.Scanner;
 
+import actions.ConsoleActionProvider;
+
 public class GameManager {
   private final int MAP_SIZE = 5;
   private Room[][] dungeon;
@@ -45,7 +47,7 @@ public class GameManager {
 
         if (currentRoom.isBossRoom() && !bossDefeated) {
           System.out.println("!! You encountered the Dungeon Boss !!");
-          FightManager fight = new FightManager(player, boss);
+          FightManager fight = new FightManager(player, boss, new ConsoleActionProvider());
           boolean won = fight.start();
           if (!won) {
             System.out.println("\n You died. GAME OVER.");
@@ -57,7 +59,7 @@ public class GameManager {
           System.out.println(" You defeated the boss!");
         } else if (currentRoom.hasEnemy()) {
           Enemy enemy = EnemyFactory.generateEnemy(dungeonLevel);
-          FightManager fight = new FightManager(player, enemy);
+          FightManager fight = new FightManager(player, enemy, new ConsoleActionProvider());
           boolean won = fight.start();
           if (!won) {
             System.out.println("\n You died. GAME OVER.");
