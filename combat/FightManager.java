@@ -1,7 +1,7 @@
 package combat;
 
-import personnages.enemy.*;
-import personnages.player.*;
+import personnages.enemy.Enemy;
+import personnages.player.Player;
 
 import java.util.Scanner;
 
@@ -19,22 +19,44 @@ public class FightManager {
     System.out.println("⚔️ A wild " + enemy.getName() + " appears!");
 
     while (player.isAlive() && enemy.isAlive()) {
-      System.out.println("\nYour HP: " + player.getHealth() + " | Enemy HP: " + enemy.getHealth());
-      System.out.print("Choose action: [1] Attack\n> ");
-      scanner.nextLine(); // Only one option now
+      showStatus();
+      int action = askAction();
 
-      // Player attacks
-      enemy.takeDamage(player.getAttack());
-      if (!enemy.isAlive()) {
-        System.out.println("🎉 You defeated the " + enemy.getName() + "!");
-        return true;
+      if (action == 1) {
+        playerAttack();
+        if (!enemy.isAlive()) {
+          System.out.println("🎉 You defeated the " + enemy.getName() + "!");
+          return true;
+        }
+
+        enemyAttack();
       }
-
-      // Enemy attacks
-      System.out.println(enemy.getName() + " attacks!");
-      player.takeDamage(enemy.getAttack());
     }
 
     return false;
+  }
+
+  private void showStatus() {
+    System.out.println("\nYour HP: " + player.getHealth() + " | Enemy HP: " + enemy.getHealth());
+  }
+
+  private int askAction() {
+    while (true) {
+      System.out.print("Choose action: [1] Attack\n> ");
+      String input = scanner.nextLine().trim();
+      if (input.equals("1")) {
+        return 1;
+      }
+      System.out.println("Invalid choice. Please enter '1'.");
+    }
+  }
+
+  private void playerAttack() {
+    enemy.takeDamage(player.getAttack());
+  }
+
+  private void enemyAttack() {
+    System.out.println(enemy.getName() + " attacks!");
+    player.takeDamage(enemy.getAttack());
   }
 }
