@@ -17,37 +17,10 @@ public class GameManager {
     System.out.print("Enter your name: ");
     String name = scanner.nextLine();
 
-    String[] classes = { "Warrior", "Assassin", "Tank" };
-    int selected = 0;
-
-    while (true) {
-      System.out.println("\nChoose your class (use 'w' to move up, 's' to move down, press Enter to confirm):");
-      for (int i = 0; i < classes.length; i++) {
-        if (i == selected) {
-          System.out.println("> " + classes[i]);
-        } else {
-          System.out.println("  " + classes[i]);
-        }
-      }
-
-      String input = scanner.nextLine();
-
-      if (input.equalsIgnoreCase("w")) {
-        selected = (selected - 1 + classes.length) % classes.length;
-      } else if (input.equalsIgnoreCase("s")) {
-        selected = (selected + 1) % classes.length;
-      } else if (input.isEmpty()) { // juste appuyer sur Entrée pour valider
-        break;
-      } else {
-        System.out.println("Invalid input. Use 'w', 's', or press Enter.");
-      }
-    }
-
-    String type = classes[selected];
+    String type = chooseClass();
     player = new Player(name, type);
     System.out.println("\nWelcome " + player.getName() + " the " + type + "!");
 
-    // Boucle principale du jeu inchangée
     while (player.isAlive()) {
       dungeonCount++;
       System.out.println("\n--- Dungeon " + dungeonCount + " ---");
@@ -70,17 +43,48 @@ public class GameManager {
         // shop.open(player); // Coming soon
       }
 
-      String choice;
-      do {
-        System.out.print("Continue to next dungeon? (y/n): ");
-        choice = scanner.nextLine().trim().toLowerCase();
-      } while (!choice.equals("y") && !choice.equals("n"));
-
-      if (choice.equals("n")) {
+      if (!askContinue()) {
         System.out.println("👋 Thanks for playing!");
         break;
       }
-
     }
+  }
+
+  private String chooseClass() {
+    String[] classes = { "Warrior", "Assassin", "Tank" };
+    int selected = 0;
+
+    while (true) {
+      System.out.println("\nChoose your class (use 'w' to move up, 's' to move down, press Enter to confirm):");
+      for (int i = 0; i < classes.length; i++) {
+        if (i == selected) {
+          System.out.println("> " + classes[i]);
+        } else {
+          System.out.println("  " + classes[i]);
+        }
+      }
+
+      String input = scanner.nextLine();
+
+      if (input.equalsIgnoreCase("w")) {
+        selected = (selected - 1 + classes.length) % classes.length;
+      } else if (input.equalsIgnoreCase("s")) {
+        selected = (selected + 1) % classes.length;
+      } else if (input.isEmpty()) {
+        return classes[selected];
+      } else {
+        System.out.println("Invalid input. Use 'w', 's', or press Enter.");
+      }
+    }
+  }
+
+  private boolean askContinue() {
+    String choice;
+    do {
+      System.out.print("Continue to next dungeon? (y/n): ");
+      choice = scanner.nextLine().trim().toLowerCase();
+    } while (!choice.equals("y") && !choice.equals("n"));
+
+    return choice.equals("y");
   }
 }
