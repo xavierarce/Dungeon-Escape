@@ -1,6 +1,7 @@
 package combat;
 
 import actions.IActionProvider;
+import actions.ICombatAction;
 import characters.Fighter;
 
 public class FightManager {
@@ -18,26 +19,23 @@ public class FightManager {
     System.out.println("⚔️ A wild " + enemy.getName() + " appears!");
     while (player.isAlive() && enemy.isAlive()) {
       showStatus();
-      int action = actionProvider.getAction();
 
-      if (action == 1) {
-        playerAttack();
-        if (!enemy.isAlive()) {
-          System.out.println("🎉 You defeated the " + enemy.getName() + "!");
-          return true;
-        }
-        enemyAttack();
+      ICombatAction playerAction = actionProvider.getAction();
+      String result = playerAction.execute(player, enemy);
+      System.out.println(result);
+
+      if (!enemy.isAlive()) {
+        System.out.println("🎉 You defeated the " + enemy.getName() + "!");
+        return true;
       }
+
+      enemyAttack();
     }
     return false;
   }
 
   private void showStatus() {
     System.out.println("\nYour HP: " + player.getHealth() + " | Enemy HP: " + enemy.getHealth());
-  }
-
-  private void playerAttack() {
-    enemy.takeDamage(player.getAttack());
   }
 
   private void enemyAttack() {

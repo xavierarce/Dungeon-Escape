@@ -1,14 +1,13 @@
 package game;
 
 import combat.FightManager;
+import input.ConsoleActionProvider;
 import characters.enemy.Enemy;
 import characters.enemy.EnemyFactory;
 import characters.player.Player;
 import map.Room;
 
 import java.util.Scanner;
-
-import actions.ConsoleActionProvider;
 
 public class GameManager {
   private final int MAP_SIZE = 5;
