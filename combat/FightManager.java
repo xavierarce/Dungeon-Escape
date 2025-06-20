@@ -1,16 +1,14 @@
 package combat;
 
 import java.util.Scanner;
-
-import characters.enemy.Enemy;
-import characters.player.Player;
+import characters.Fighter; 
 
 public class FightManager {
-  private Player player;
-  private Enemy enemy;
+  private Fighter player;
+  private Fighter enemy;
   private Scanner scanner = new Scanner(System.in);
 
-  public FightManager(Player player, Enemy enemy) {
+  public FightManager(Fighter player, Fighter enemy) {
     this.player = player;
     this.enemy = enemy;
   }
