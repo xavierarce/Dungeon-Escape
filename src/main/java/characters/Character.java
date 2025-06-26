@@ -39,4 +39,10 @@ public abstract class Character implements Fighter {
     public int getAttack() {
         return attack;
     }
+
+    @Override
+    public int getDefense() {
+        return defense;
+    }
+
 }

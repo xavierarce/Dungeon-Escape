@@ -32,6 +32,10 @@ class AttackActionTest {
             return attack;
         }
 
+        public int getDefense() {
+            return 0; // ou une valeur que tu veux simuler dans tes tests
+        }
+
         @Override
         public boolean isAlive() {
             return health > 0;
