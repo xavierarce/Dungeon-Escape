@@ -7,6 +7,8 @@ public interface Fighter {
 
   int getAttack();
 
+  int getDefense();
+
   boolean isAlive();
 
   void takeDamage(int amount);
