@@ -1,66 +1,63 @@
 package game;
 
+import input.InputProvider;
 import combat.FightManager;
-import input.ConsoleActionProvider;
+import combat.FightManagerFactory;
 import characters.enemy.Enemy;
 import characters.enemy.EnemyFactory;
 import characters.player.Player;
 import map.Room;
-
-import java.util.Scanner;
+import map.Dungeon;
 
 public class GameManager {
-  private final int MAP_SIZE = 5;
-  private Room[][] dungeon;
   private int playerX = 1;
   private int playerY = 1;
   private int dungeonLevel = 1;
-  private Scanner scanner = new Scanner(System.in);
+  private final InputProvider inputProvider;
+  private final FightManagerFactory fightFactory;
   private Player player;
+  private Dungeon dungeon;
 
-  // Boss enemy and flag if defeated
-  private Enemy boss;
-  private int bossX;
-  private int bossY;
-  private boolean bossDefeated;
+  public GameManager(InputProvider inputProvider, FightManagerFactory fightFactory) {
+    this.inputProvider = inputProvider;
+    this.fightFactory = fightFactory;
+  }
 
   public void start() {
     System.out.println("=== Welcome to Dungeon Escape ===");
     System.out.print("Enter your name: ");
-    String name = scanner.nextLine();
+    String name = inputProvider.nextLine();
 
     String type = chooseClass();
     player = new Player(name, type);
 
     System.out.println("\nWelcome " + player.getName() + " the " + type + "!");
-    generateDungeon();
+    dungeon = new Dungeon(playerX, playerY, dungeonLevel);
 
     while (player.isAlive()) {
       System.out.println("\n--- Dungeon Level " + dungeonLevel + " ---");
       movePlayer();
 
-      Room currentRoom = dungeon[playerY][playerX];
+      Room currentRoom = dungeon.getRoom(playerX, playerY);
 
       if (!currentRoom.isVisited()) {
         currentRoom.setVisited(true);
 
-        if (currentRoom.isBossRoom() && !bossDefeated) {
+        if (currentRoom.isBossRoom() && !dungeon.isBossDefeated()) {
           System.out.println("!! You encountered the Dungeon Boss !!");
-          FightManager fight = new FightManager(player, boss, new ConsoleActionProvider());
-          boolean won = fight.start();
-          if (!won) {
+          FightManager fight = fightFactory.create(player, dungeon.getBoss(), inputProvider.getActionProvider());
+          if (!fight.start()) {
             System.out.println("\n You died. GAME OVER.");
             return;
           }
-          bossDefeated = true;
-          player.gainEXP(boss.getExpReward());
-          player.gainGold(boss.getGoldReward());
+          dungeon.setBossDefeated(true);
+          player.gainEXP(dungeon.getBoss().getExpReward());
+          player.gainGold(dungeon.getBoss().getGoldReward());
           System.out.println(" You defeated the boss!");
         } else if (currentRoom.hasEnemy()) {
           Enemy enemy = EnemyFactory.generateEnemy(dungeonLevel);
-          FightManager fight = new FightManager(player, enemy, new ConsoleActionProvider());
-          boolean won = fight.start();
-          if (!won) {
+          FightManager fight = fightFactory.create(player, enemy, inputProvider.getActionProvider());
+          if (!fight.start()) {
             System.out.println("\n You died. GAME OVER.");
             return;
           }
@@ -74,11 +71,11 @@ public class GameManager {
       }
 
       if (currentRoom.isExit()) {
-        if (bossDefeated) {
+        if (dungeon.isBossDefeated()) {
           System.out.println("🚪 You found the exit and can now proceed to the next dungeon.");
           dungeonLevel++;
           playerX = playerY = 1;
-          generateDungeon();
+          dungeon = new Dungeon(playerX, playerY, dungeonLevel);
         } else {
           System.out.println("🚪 You found the exit but the boss is still alive! Defeat the boss first!");
         }
@@ -95,7 +92,7 @@ public class GameManager {
     while (true) {
       showMap();
       System.out.println("Move: w = up, s = down, a = left, d = right, e = explore room");
-      String input = scanner.nextLine().trim().toLowerCase();
+      String input = inputProvider.nextLine().trim().toLowerCase();
 
       switch (input) {
         case "w":
@@ -105,7 +102,7 @@ public class GameManager {
             System.out.println("❌ Wall to the north.");
           break;
         case "s":
-          if (playerY < MAP_SIZE - 1)
+          if (playerY < dungeon.getMapSize() - 1)
             playerY++;
           else
             System.out.println("❌ Wall to the south.");
@@ -117,13 +114,13 @@ public class GameManager {
             System.out.println("❌ Wall to the west.");
           break;
         case "d":
-          if (playerX < MAP_SIZE - 1)
+          if (playerX < dungeon.getMapSize() - 1)
             playerX++;
           else
             System.out.println("❌ Wall to the east.");
           break;
         case "e":
-          return; // Explore current room
+          return;
         default:
           System.out.println("Invalid input.");
       }
@@ -131,15 +128,16 @@ public class GameManager {
   }
 
   private void showMap() {
-    for (int y = 0; y < MAP_SIZE; y++) {
-      for (int x = 0; x < MAP_SIZE; x++) {
+    Room[][] rooms = dungeon.getRooms();
+    for (int y = 0; y < dungeon.getMapSize(); y++) {
+      for (int x = 0; x < dungeon.getMapSize(); x++) {
         if (x == playerX && y == playerY)
           System.out.print("[P]");
-        else if (dungeon[y][x].isBossRoom() && !bossDefeated)
+        else if (rooms[y][x].isBossRoom() && !dungeon.isBossDefeated())
           System.out.print("[B]");
-        else if (dungeon[y][x].isExit())
+        else if (rooms[y][x].isExit())
           System.out.print("[E]");
-        else if (dungeon[y][x].isVisited())
+        else if (rooms[y][x].isVisited())
           System.out.print("[x]");
         else
           System.out.print("[ ]");
@@ -148,41 +146,12 @@ public class GameManager {
     }
   }
 
-  private void generateDungeon() {
-    dungeon = new Room[MAP_SIZE][MAP_SIZE];
-    for (int y = 0; y < MAP_SIZE; y++) {
-      for (int x = 0; x < MAP_SIZE; x++) {
-        dungeon[y][x] = new Room();
-
-        if (!(x == playerX && y == playerY) && !(x == bossX && y == bossY)
-            && !(x == MAP_SIZE - 1 && y == MAP_SIZE - 1)) {
-          boolean hasEnemy = Math.random() < 0.7;
-          dungeon[y][x].setHasEnemy(hasEnemy);
-        }
-      }
-    }
-
-    // Place exit in bottom-right
-    dungeon[MAP_SIZE - 1][MAP_SIZE - 1].setExit(true);
-
-    // Place boss on top middle
-    bossY = 0;
-    bossX = MAP_SIZE / 2;
-    dungeon[bossY][bossX].setBossRoom(true);
-
-    // Create the boss enemy here!
-    boss = EnemyFactory.generateBoss(dungeonLevel);
-
-    bossDefeated = false;
-  }
-
   private boolean askContinue() {
     String choice;
     do {
       System.out.print("Continue exploring? (y/n): ");
-      choice = scanner.nextLine().trim().toLowerCase();
+      choice = inputProvider.nextLine().trim().toLowerCase();
     } while (!choice.equals("y") && !choice.equals("n"));
-
     return choice.equals("y");
   }
 
@@ -196,7 +165,7 @@ public class GameManager {
         System.out.println((i == selected ? "> " : "  ") + classes[i]);
       }
 
-      String input = scanner.nextLine();
+      String input = inputProvider.nextLine();
       if (input.equalsIgnoreCase("w"))
         selected = (selected - 1 + classes.length) % classes.length;
       else if (input.equalsIgnoreCase("s"))
