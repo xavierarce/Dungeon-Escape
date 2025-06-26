@@ -1,13 +1,20 @@
 package input;
 
-import actions.IActionProvider;
-import actions.ICombatAction;
-import actions.AttackAction;
-import actions.DefendAction;
+import actions.*;
 import java.util.Scanner;
 
-public class ConsoleActionProvider implements IActionProvider {
+public class ConsoleActionProvider implements InputProvider, IActionProvider {
   private Scanner scanner = new Scanner(System.in);
+
+  @Override
+  public String nextLine() {
+    return scanner.nextLine();
+  }
+
+  @Override
+  public IActionProvider getActionProvider() {
+    return this;
+  }
 
   @Override
   public ICombatAction getAction() {
@@ -20,7 +27,7 @@ public class ConsoleActionProvider implements IActionProvider {
         case "2":
           return new DefendAction();
         default:
-          System.out.println("Invalid choice. Please enter '1' or '2'.");
+          System.out.println("Invalid choice.");
       }
     }
   }
