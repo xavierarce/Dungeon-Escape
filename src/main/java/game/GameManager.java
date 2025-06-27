@@ -35,7 +35,10 @@ public class GameManager {
     dungeon = new Dungeon(playerX, playerY, dungeonLevel);
 
     while (player.isAlive()) {
-      System.out.println("\n--- Dungeon Level " + dungeonLevel + " ---");
+      System.out.println(
+          "\n--- Dungeon Level " + dungeonLevel + " ---" +
+              "\n👤 Player Level: " + player.getLevel() +
+              " | EXP: " + player.getExperience() + "/" + player.getExpToNextLevel());
       movePlayer();
 
       Room currentRoom = dungeon.getRoom(playerX, playerY);
