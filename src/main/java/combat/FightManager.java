@@ -2,14 +2,21 @@ package combat;
 
 import actions.IActionProvider;
 import actions.ICombatAction;
-import characters.Fighter;
+
+import characters.player.Player;
+import characters.enemy.Enemy;
+import inventory.Armor;
+import inventory.Item;
+import inventory.Weapon;
+
+import java.util.Random;
 
 public class FightManager {
-  private Fighter player;
-  private Fighter enemy;
+  private Player player;
+  private Enemy enemy;
   private IActionProvider actionProvider;
 
-  public FightManager(Fighter player, Fighter enemy, IActionProvider actionProvider) {
+  public FightManager(Player player, Enemy enemy, IActionProvider actionProvider) {
     this.player = player;
     this.enemy = enemy;
     this.actionProvider = actionProvider;
@@ -26,20 +33,49 @@ public class FightManager {
 
       if (!enemy.isAlive()) {
         System.out.println("🎉 You defeated the " + enemy.getName() + "!");
+
+        player.gainEXP(enemy.getExpReward());
+        player.gainGold(enemy.getGoldReward());
+
+        Item loot = generateRandomLoot();
+        player.getInventory().addItem(loot);
+
+        if (loot instanceof Weapon) {
+          player.equipWeapon((Weapon) loot);
+        } else if (loot instanceof Armor) {
+          player.equipArmor((Armor) loot);
+        }
+
         return true;
       }
 
       enemyAttack();
     }
+
     return false;
   }
 
   private void showStatus() {
-    System.out.println("\nYour HP: " + player.getHealth() + " | Enemy HP: " + enemy.getHealth());
+    System.out.println(
+        "\nLevel " + player.getLevel() + " - Your HP: " + player.getHealth() + " | Enemy HP: " + enemy.getHealth());
   }
 
   private void enemyAttack() {
     System.out.println(enemy.getName() + " attacks!");
     player.takeDamage(enemy.getAttack());
   }
+
+  private Item generateRandomLoot() {
+    Random rand = new Random();
+    int roll = rand.nextInt(2);
+
+    if (roll == 0) {
+      int atk = 5 + rand.nextInt(6); // 5-10
+      return new Weapon("Sword of Power +" + atk, atk);
+    } else {
+      int def = 3 + rand.nextInt(5); // 3-7
+      return new Armor("Shield of Resilience +" + def, def);
+    }
+  }
+
 }
