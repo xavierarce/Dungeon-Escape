@@ -114,6 +114,14 @@ public class Player extends Character {
     return equippedArmor != null ? equippedArmor.getName() : "None";
   }
 
+  public Weapon getEquippedWeapon() {
+    return equippedWeapon;
+  }
+
+  public Armor getEquippedArmor() {
+    return equippedArmor;
+  }
+
   @Override
   public int getAttack() {
     return attack + (equippedWeapon != null ? equippedWeapon.getAttackBoost() : 0);

@@ -8,50 +8,48 @@ public class LootHandler {
   public static void handle(Item loot, Player player, InputProvider inputProvider) {
     System.out.println("🎁 You found: " + loot.getName());
 
-    String type = (loot instanceof Weapon) ? "weapon"
-        : (loot instanceof Armor) ? "armor"
-            : "item";
+    if (loot instanceof Weapon newWeapon) {
+      Weapon currentWeapon = player.getEquippedWeapon();
+      int currentAtk = currentWeapon != null ? currentWeapon.getAttackBoost() : 0;
 
-    while (true) {
-      System.out.println("\nWhat would you like to do?");
-      System.out.println("1. Equip " + type);
-      System.out.println("2. Regenerate 30 HP");
-      System.out.println("3. Skip");
+      System.out.println("Current weapon: " + (currentWeapon != null ? currentWeapon.getName() : "None") +
+          " (+" + currentAtk + " ATK)");
+      System.out.println("New weapon: " + newWeapon.getName() + " (+" + newWeapon.getAttackBoost() + " ATK)");
 
-      System.out.print("Choose: ");
-      String input = inputProvider.nextLine().trim();
+      int diff = newWeapon.getAttackBoost() - currentAtk;
+      System.out.println("⚔️ ATK Change: " + (diff >= 0 ? "+" : "") + diff);
 
-      switch (input) {
-        case "1":
-          if (loot instanceof Weapon newWeapon) {
-            System.out.println("Current weapon: " + player.getEquippedWeaponName());
-            System.out.println("New weapon: " + newWeapon.getName() + " (+" + newWeapon.getAttackBoost() + " ATK)");
-            player.equipWeapon(newWeapon);
-          } else if (loot instanceof Armor newArmor) {
-            System.out.println("Current armor: " + player.getEquippedArmorName());
-            System.out.println("New armor: " + newArmor.getName() + " (+" + newArmor.getDefenseBoost() + " DEF)");
-            player.equipArmor(newArmor);
-          } else {
-            System.out.println("❌ This item cannot be equipped.");
-          }
-          player.getInventory().addItem(loot);
-          return;
+      if (askYesNo("Equip this weapon? (y/n): ", inputProvider)) {
+        player.equipWeapon(newWeapon);
+      }
+    } else if (loot instanceof Armor newArmor) {
+      Armor currentArmor = player.getEquippedArmor();
+      int currentDef = currentArmor != null ? currentArmor.getDefenseBoost() : 0;
 
-        case "2":
-          int healed = Math.min(30, player.getMaxHealth() - player.getHealth());
-          player.setHealth(player.getHealth() + healed);
-          System.out.println("❤️ You regenerated " + healed + " HP.");
-          return;
+      System.out.println("Current armor: " + (currentArmor != null ? currentArmor.getName() : "None") +
+          " (+" + currentDef + " DEF)");
+      System.out.println("New armor: " + newArmor.getName() + " (+" + newArmor.getDefenseBoost() + " DEF)");
 
-        case "3":
-          System.out.println("You chose to skip the item.");
-          player.getInventory().addItem(loot);
-          return;
+      int diff = newArmor.getDefenseBoost() - currentDef;
+      System.out.println("🛡️ DEF Change: " + (diff >= 0 ? "+" : "") + diff);
 
-        default:
-          System.out.println("❌ Invalid input. Please select 1, 2, or 3.");
+      if (askYesNo("Equip this armor? (y/n): ", inputProvider)) {
+        player.equipArmor(newArmor);
       }
     }
+
+    player.getInventory().addItem(loot);
   }
 
+  private static boolean askYesNo(String prompt, InputProvider inputProvider) {
+    while (true) {
+      System.out.print(prompt);
+      String input = inputProvider.nextLine().trim().toLowerCase();
+      if (input.equals("y"))
+        return true;
+      if (input.equals("n"))
+        return false;
+      System.out.println("Please enter 'y' or 'n'.");
+    }
+  }
 }
