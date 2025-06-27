@@ -28,15 +28,12 @@ public class Dungeon {
       }
     }
 
-    // Set exit
     rooms[MAP_SIZE - 1][MAP_SIZE - 1].setExit(true);
 
-    // Set boss room
     bossY = 0;
     bossX = MAP_SIZE / 2;
     rooms[bossY][bossX].setBossRoom(true);
 
-    // Generate boss
     boss = EnemyFactory.generateBoss(dungeonLevel);
     bossDefeated = false;
   }

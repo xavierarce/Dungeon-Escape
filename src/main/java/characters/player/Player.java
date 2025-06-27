@@ -124,4 +124,12 @@ public class Player extends Character {
     return defense + (equippedArmor != null ? equippedArmor.getDefenseBoost() : 0);
   }
 
+  public int getMaxHealth() {
+    return super.health; // Or store a baseMaxHealth field if health increases by healing
+  }
+
+  public void setHealth(int newHealth) {
+    this.health = Math.min(newHealth, getMaxHealth());
+  }
+
 }

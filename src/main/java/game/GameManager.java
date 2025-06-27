@@ -38,7 +38,13 @@ public class GameManager {
       System.out.println(
           "\n--- Dungeon Level " + dungeonLevel + " ---" +
               "\n👤 Player Level: " + player.getLevel() +
-              " | EXP: " + player.getExperience() + "/" + player.getExpToNextLevel());
+              " | EXP: " + player.getExperience() + "/" + player.getExpToNextLevel() +
+              "\n❤️ Health: " + player.getHealth() + "/" + player.getMaxHealth() +
+              "\n⚔️ Attack: " + player.getAttack() +
+              "\n🛡️ Defense: " + player.getDefense() +
+              "\n💰 Gold: " + player.getGold() +
+              "\n🔫 Equipped Weapon: " + player.getEquippedWeaponName() +
+              "\n🛡️ Equipped Armor: " + player.getEquippedArmorName());
       movePlayer();
 
       Room currentRoom = dungeon.getRoom(playerX, playerY);
