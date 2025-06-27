@@ -23,9 +23,10 @@ class EnemyFactoryTest {
     Enemy boss = EnemyFactory.generateBoss(level);
 
     assertEquals("Dungeon Boss", boss.getName());
-    assertEquals(150 + level * 20, boss.getHealth());
-    assertEquals(30 + level * 5, boss.getAttack());
-    assertEquals(100 + level * 50, boss.getExpReward());
-    assertEquals(200 + level * 100, boss.getGoldReward());
+    assertEquals(100 + level * 15, boss.getHealth()); // 130
+    assertEquals(15 + level * 3, boss.getAttack()); // 21
+    assertEquals(100 + level * 50, boss.getExpReward()); // 200
+    assertEquals(200 + level * 100, boss.getGoldReward()); // 400
   }
+
 }

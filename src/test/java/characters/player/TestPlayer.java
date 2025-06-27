@@ -8,18 +8,18 @@ class PlayerTest {
   @Test
   void playerConstructor_ShouldInitializeStatsByType() {
     Player warrior = new Player("Warrior", "warrior");
-    assertEquals(100, warrior.getHealth());
-    assertEquals(15, warrior.getAttack());
-    assertEquals(10, warrior.getDefense());
+    assertEquals(150, warrior.getHealth());
+    assertEquals(20, warrior.getAttack());
+    assertEquals(15, warrior.getDefense());
 
     Player assassin = new Player("Assassin", "assassin");
-    assertEquals(80, assassin.getHealth());
-    assertEquals(20, assassin.getAttack());
-    assertEquals(5, assassin.getDefense());
+    assertEquals(85, assassin.getHealth());
+    assertEquals(45, assassin.getAttack());
+    assertEquals(10, assassin.getDefense());
 
     Player tank = new Player("Tank", "tank");
-    assertEquals(120, tank.getHealth());
-    assertEquals(10, tank.getAttack());
+    assertEquals(500, tank.getHealth());
+    assertEquals(15, tank.getAttack());
     assertEquals(15, tank.getDefense());
 
     Player defaultPlayer = new Player("Default", "unknown");

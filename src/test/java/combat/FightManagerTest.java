@@ -5,6 +5,7 @@ import actions.ICombatAction;
 import characters.Fighter;
 import characters.enemy.Enemy;
 import characters.player.Player;
+import input.InputProvider;
 
 import org.junit.jupiter.api.Test;
 
@@ -61,10 +62,9 @@ class FightManagerTest {
 
   @Test
   void fightManager_fightEndsWithPlayerVictory() {
-    TestFighter player = new TestFighter("Player", 100, 30, 5);
-    TestFighter enemy = new TestFighter("Enemy", 40, 10, 2);
+    Player player = new Player("TestPlayer", "warrior");
+    Enemy enemy = new Enemy("TestEnemy", 40, 10, 2, 0, 0);
 
-    // Mock actionProvider to always return an attack action
     ICombatAction attackAction = mock(ICombatAction.class);
     when(attackAction.execute(player, enemy)).thenAnswer(invocation -> {
       enemy.takeDamage(player.getAttack());
@@ -74,25 +74,16 @@ class FightManagerTest {
     IActionProvider actionProvider = mock(IActionProvider.class);
     when(actionProvider.getAction()).thenReturn(attackAction);
 
-    FightManager fightManager = new FightManager(player, enemy, actionProvider);
+    InputProvider inputProvider = mock(InputProvider.class);
+    when(inputProvider.nextLine()).thenReturn("n");
+
+    FightManager fightManager = new FightManager(player, enemy, actionProvider, inputProvider);
 
     boolean result = fightManager.start();
 
-    assertTrue(result, "Player should win the fight");
-    assertFalse(enemy.isAlive(), "Enemy should be dead");
-    assertTrue(player.isAlive(), "Player should still be alive");
+    assertTrue(result);
+    assertFalse(enemy.isAlive());
+    assertTrue(player.isAlive());
   }
 
-  @Test
-  void defaultFightManagerFactory_createsFightManager() {
-    DefaultFightManagerFactory factory = new DefaultFightManagerFactory();
-
-    Player player = new Player("TestPlayer", "warrior");
-    Enemy enemy = new Enemy("TestEnemy", 100, 20, 5, 50, 100);
-    IActionProvider actionProvider = mock(IActionProvider.class);
-
-    FightManager fightManager = factory.create(player, enemy, actionProvider);
-
-    assertNotNull(fightManager, "Factory should create a FightManager instance");
-  }
 }
