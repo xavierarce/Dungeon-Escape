@@ -132,4 +132,12 @@ public class Player extends Character {
     this.health = Math.min(newHealth, getMaxHealth());
   }
 
+  public void increaseAttack(int amount) {
+    this.attack += amount;
+  }
+
+  public void increaseDefense(int amount) {
+    this.defense += amount;
+  }
+
 }
