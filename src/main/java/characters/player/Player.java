@@ -21,18 +21,18 @@ public class Player extends Character {
 
     switch (type.toLowerCase()) {
       case "warrior":
-        this.health = 100;
-        this.attack = 15;
-        this.defense = 10;
+        this.health = 150;
+        this.attack = 20;
+        this.defense = 15;
         break;
       case "assassin":
-        this.health = 80;
-        this.attack = 20;
-        this.defense = 5;
+        this.health = 85;
+        this.attack = 45;
+        this.defense = 10;
         break;
       case "tank":
-        this.health = 120;
-        this.attack = 10;
+        this.health = 500;
+        this.attack = 15;
         this.defense = 15;
         break;
       default:
