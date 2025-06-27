@@ -106,6 +106,14 @@ public class Player extends Character {
     System.out.println("Equipped armor: " + armor.getName());
   }
 
+  public String getEquippedWeaponName() {
+    return equippedWeapon != null ? equippedWeapon.getName() : "None";
+  }
+
+  public String getEquippedArmorName() {
+    return equippedArmor != null ? equippedArmor.getName() : "None";
+  }
+
   @Override
   public int getAttack() {
     return attack + (equippedWeapon != null ? equippedWeapon.getAttackBoost() : 0);
