@@ -5,9 +5,11 @@ import actions.ICombatAction;
 
 import characters.player.Player;
 import characters.enemy.Enemy;
-import inventory.Armor;
 import inventory.Item;
+import inventory.LootHandler;
+import input.InputProvider;
 import inventory.Weapon;
+import inventory.Armor;
 
 import java.util.Random;
 
@@ -15,11 +17,13 @@ public class FightManager {
   private Player player;
   private Enemy enemy;
   private IActionProvider actionProvider;
+  private InputProvider inputProvider;
 
-  public FightManager(Player player, Enemy enemy, IActionProvider actionProvider) {
+  public FightManager(Player player, Enemy enemy, IActionProvider actionProvider, InputProvider inputProvider) {
     this.player = player;
     this.enemy = enemy;
     this.actionProvider = actionProvider;
+    this.inputProvider = inputProvider;
   }
 
   public boolean start() {
@@ -38,13 +42,7 @@ public class FightManager {
         player.gainGold(enemy.getGoldReward());
 
         Item loot = generateRandomLoot();
-        player.getInventory().addItem(loot);
-
-        if (loot instanceof Weapon) {
-          player.equipWeapon((Weapon) loot);
-        } else if (loot instanceof Armor) {
-          player.equipArmor((Armor) loot);
-        }
+        LootHandler.handle(loot, player, inputProvider);
 
         return true;
       }
@@ -77,5 +75,4 @@ public class FightManager {
       return new Armor("Shield of Resilience +" + def, def);
     }
   }
-
 }

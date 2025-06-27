@@ -21,18 +21,18 @@ public class Player extends Character {
 
     switch (type.toLowerCase()) {
       case "warrior":
-        this.health = 100;
-        this.attack = 15;
-        this.defense = 10;
+        this.health = 150;
+        this.attack = 20;
+        this.defense = 15;
         break;
       case "assassin":
-        this.health = 80;
-        this.attack = 20;
-        this.defense = 5;
+        this.health = 85;
+        this.attack = 45;
+        this.defense = 10;
         break;
       case "tank":
-        this.health = 120;
-        this.attack = 10;
+        this.health = 500;
+        this.attack = 15;
         this.defense = 15;
         break;
       default:
@@ -106,6 +106,14 @@ public class Player extends Character {
     System.out.println("Equipped armor: " + armor.getName());
   }
 
+  public String getEquippedWeaponName() {
+    return equippedWeapon != null ? equippedWeapon.getName() : "None";
+  }
+
+  public String getEquippedArmorName() {
+    return equippedArmor != null ? equippedArmor.getName() : "None";
+  }
+
   @Override
   public int getAttack() {
     return attack + (equippedWeapon != null ? equippedWeapon.getAttackBoost() : 0);
@@ -114,6 +122,14 @@ public class Player extends Character {
   @Override
   public int getDefense() {
     return defense + (equippedArmor != null ? equippedArmor.getDefenseBoost() : 0);
+  }
+
+  public int getMaxHealth() {
+    return super.health; // Or store a baseMaxHealth field if health increases by healing
+  }
+
+  public void setHealth(int newHealth) {
+    this.health = Math.min(newHealth, getMaxHealth());
   }
 
 }

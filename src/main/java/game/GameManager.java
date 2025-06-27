@@ -38,7 +38,13 @@ public class GameManager {
       System.out.println(
           "\n--- Dungeon Level " + dungeonLevel + " ---" +
               "\n👤 Player Level: " + player.getLevel() +
-              " | EXP: " + player.getExperience() + "/" + player.getExpToNextLevel());
+              " | EXP: " + player.getExperience() + "/" + player.getExpToNextLevel() +
+              "\n❤️ Health: " + player.getHealth() + "/" + player.getMaxHealth() +
+              "\n⚔️ Attack: " + player.getAttack() +
+              "\n🛡️ Defense: " + player.getDefense() +
+              "\n💰 Gold: " + player.getGold() +
+              "\n🔫 Equipped Weapon: " + player.getEquippedWeaponName() +
+              "\n🛡️ Equipped Armor: " + player.getEquippedArmorName());
       movePlayer();
 
       Room currentRoom = dungeon.getRoom(playerX, playerY);
@@ -48,7 +54,8 @@ public class GameManager {
 
         if (currentRoom.isBossRoom() && !dungeon.isBossDefeated()) {
           System.out.println("!! You encountered the Dungeon Boss !!");
-          FightManager fight = fightFactory.create(player, dungeon.getBoss(), inputProvider.getActionProvider());
+          FightManager fight = fightFactory.create(player, dungeon.getBoss(), inputProvider.getActionProvider(),
+              inputProvider);
           if (!fight.start()) {
             System.out.println("\n You died. GAME OVER.");
             return;
@@ -59,7 +66,7 @@ public class GameManager {
           System.out.println(" You defeated the boss!");
         } else if (currentRoom.hasEnemy()) {
           Enemy enemy = EnemyFactory.generateEnemy(dungeonLevel);
-          FightManager fight = fightFactory.create(player, enemy, inputProvider.getActionProvider());
+          FightManager fight = fightFactory.create(player, enemy, inputProvider.getActionProvider(), inputProvider);
           if (!fight.start()) {
             System.out.println("\n You died. GAME OVER.");
             return;

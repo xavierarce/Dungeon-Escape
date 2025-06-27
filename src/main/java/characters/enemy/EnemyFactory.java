@@ -9,9 +9,9 @@ public class EnemyFactory {
   }
 
   public static Enemy generateBoss(int level) {
-    int health = 150 + (level * 20);
-    int attack = 30 + (level * 5);
-    int defense = 15 + (level * 3);
+    int health = 100 + (level * 15);
+    int attack = 15 + (level * 3);
+    int defense = 8 + (level * 2);
     int expReward = 100 + (level * 50);
     int goldReward = 200 + (level * 100);
     return new Enemy("Dungeon Boss", health, attack, defense, expReward, goldReward);
