@@ -64,6 +64,7 @@ public class GameManager {
           player.gainEXP(dungeon.getBoss().getExpReward());
           player.gainGold(dungeon.getBoss().getGoldReward());
           System.out.println(" You defeated the boss!");
+          choosePostFightReward();
         } else if (currentRoom.hasEnemy()) {
           Enemy enemy = EnemyFactory.generateEnemy(dungeonLevel);
           FightManager fight = fightFactory.create(player, enemy, inputProvider.getActionProvider(), inputProvider);
@@ -73,6 +74,7 @@ public class GameManager {
           }
           player.gainEXP(enemy.getExpReward());
           player.gainGold(enemy.getGoldReward());
+          choosePostFightReward();
         } else {
           System.out.println("🌫️ The room is empty.");
         }
@@ -184,6 +186,31 @@ public class GameManager {
         return classes[selected];
       else
         System.out.println("Invalid input. Use 'w', 's', or press Enter.");
+    }
+  }
+
+  // Ajout : méthode pour choisir une récompense après chaque victoire
+  private void choosePostFightReward() {
+    System.out.println("\nChoose your reward: [1] +5 Attack  [2] +5 Defense  [3] Regenerate HP");
+    while (true) {
+      System.out.print("> ");
+      String input = inputProvider.nextLine().trim();
+      switch (input) {
+        case "1":
+          player.increaseAttack(5);
+          System.out.println("Your attack increased by 5!");
+          return;
+        case "2":
+          player.increaseDefense(5);
+          System.out.println("Your defense increased by 5!");
+          return;
+        case "3":
+          player.setHealth(player.getMaxHealth());
+          System.out.println("You are fully healed!");
+          return;
+        default:
+          System.out.println("Invalid choice. Please select 1, 2, or 3.");
+      }
     }
   }
 }
